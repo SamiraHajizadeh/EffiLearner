@@ -1,0 +1,37 @@
+Timer unit: 1e-06 s
+
+Total time: 1.2e-05 s
+File: 4_tmp.py
+Function: findMedianSortedArrays at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def findMedianSortedArrays(self, nums1, nums2):
+    47                                                   # Make sure nums1 is the smaller array.
+    48         2          1.0      0.5      8.3          if len(nums1) > len(nums2):
+    49         1          0.0      0.0      0.0              nums1, nums2 = nums2, nums1
+    50                                           
+    51         2          1.0      0.5      8.3          x, y = len(nums1), len(nums2)
+    52         2          2.0      1.0     16.7          low, high = 0, x
+    53                                                   
+    54         4          0.0      0.0      0.0          while low <= high:
+    55         4          1.0      0.2      8.3              partitionX = (low + high) // 2
+    56         4          1.0      0.2      8.3              partitionY = (x + y + 1) // 2 - partitionX
+    57                                                       
+    58         4          1.0      0.2      8.3              maxLeftX = float('-inf') if partitionX == 0 else nums1[partitionX - 1]
+    59         4          1.0      0.2      8.3              minRightX = float('inf') if partitionX == x else nums1[partitionX]
+    60                                                       
+    61         4          0.0      0.0      0.0              maxLeftY = float('-inf') if partitionY == 0 else nums2[partitionY - 1]
+    62         4          1.0      0.2      8.3              minRightY = float('inf') if partitionY == y else nums2[partitionY]
+    63                                                       
+    64         4          1.0      0.2      8.3              if maxLeftX <= minRightY and maxLeftY <= minRightX:
+    65         2          0.0      0.0      0.0                  if (x + y) % 2 == 0:
+    66         1          1.0      1.0      8.3                      return (max(maxLeftX, maxLeftY) + min(minRightX, minRightY)) / 2
+    67                                                           else:
+    68         1          0.0      0.0      0.0                      return max(maxLeftX, maxLeftY)
+    69         2          1.0      0.5      8.3              elif maxLeftX > minRightY:
+    70                                                           high = partitionX - 1
+    71                                                       else:
+    72         2          0.0      0.0      0.0                  low = partitionX + 1
+

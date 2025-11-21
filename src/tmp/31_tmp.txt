@@ -1,0 +1,38 @@
+Timer unit: 1e-06 s
+
+Total time: 1.6e-05 s
+File: 31_tmp.py
+Function: nextPermutation at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def nextPermutation(self, nums):
+    47                                                   # Step 1: Find the rightmost "peak"
+    48         3          2.0      0.7     12.5          i = len(nums) - 2
+    49         5          3.0      0.6     18.8          while i >= 0 and nums[i] >= nums[i + 1]:
+    50         2          0.0      0.0      0.0              i -= 1
+    51                                                   
+    52                                                   # Step 2: If such a number is found, find the number which is to be replaced
+    53         3          0.0      0.0      0.0          if i >= 0:
+    54         2          0.0      0.0      0.0              j = len(nums) - 1
+    55         2          0.0      0.0      0.0              while nums[j] <= nums[i]:
+    56                                                           j -= 1
+    57                                                       # Swap numbers at i and j
+    58         2          2.0      1.0     12.5              nums[i], nums[j] = nums[j], nums[i]
+    59                                                   
+    60                                                   # Step 3: Reverse the sequence from i + 1 till end
+    61         3          9.0      3.0     56.2          self.reverse(nums, i + 1, len(nums) - 1)
+
+Total time: 2e-06 s
+File: 31_tmp.py
+Function: reverse at line 63
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    63                                               @profile
+    64                                               def reverse(self, nums, start, end):
+    65         4          1.0      0.2     50.0          while start < end:
+    66         1          0.0      0.0      0.0              nums[start], nums[end] = nums[end], nums[start]
+    67         1          1.0      1.0     50.0              start, end = start + 1, end - 1
+

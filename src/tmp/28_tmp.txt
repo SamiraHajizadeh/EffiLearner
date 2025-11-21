@@ -1,0 +1,12 @@
+Timer unit: 1e-06 s
+
+Total time: 3e-06 s
+File: 28_tmp.py
+Function: strStr at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def strStr(self, haystack: str, needle: str) -> int:
+    47         4          3.0      0.8    100.0          return haystack.find(needle)
+

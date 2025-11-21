@@ -1,0 +1,21 @@
+Timer unit: 1e-06 s
+
+Total time: 1e-05 s
+File: 62_tmp.py
+Function: uniquePaths at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def uniquePaths(self, m: int, n: int) -> int:
+    47                                                   # Use a single array to store the path counts for the current row
+    48         2          2.0      1.0     20.0          dp = [1] * n
+    49                                                   
+    50                                                   # Iterate over the grid excluding the first row as it's already initialized
+    51         6          0.0      0.0      0.0          for i in range(1, m):
+    52        18          4.0      0.2     40.0              for j in range(1, n):
+    53                                                           # Update the current cell value using the previous row's value and the left cell's value
+    54        14          3.0      0.2     30.0                  dp[j] += dp[j - 1]
+    55                                           
+    56         2          1.0      0.5     10.0          return dp[n - 1]
+

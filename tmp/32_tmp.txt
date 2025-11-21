@@ -1,0 +1,25 @@
+Timer unit: 1e-06 s
+
+Total time: 1.3e-05 s
+File: 32_tmp.py
+Function: longestValidParentheses at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def longestValidParentheses(self, s: str) -> int:
+    47         3          1.0      0.3      7.7          stack = [-1]
+    48         3          1.0      0.3      7.7          max_length = 0
+    49                                           
+    50        12          4.0      0.3     30.8          for i, char in enumerate(s):
+    51         9          3.0      0.3     23.1              if char == '(':
+    52         4          1.0      0.2      7.7                  stack.append(i)
+    53                                                       else:
+    54         5          1.0      0.2      7.7                  stack.pop()
+    55         5          0.0      0.0      0.0                  if not stack:
+    56         2          0.0      0.0      0.0                      stack.append(i)
+    57                                                           else:
+    58         3          1.0      0.3      7.7                      max_length = max(max_length, i - stack[-1])
+    59                                           
+    60         3          1.0      0.3      7.7          return max_length
+

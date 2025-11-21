@@ -1,0 +1,42 @@
+Timer unit: 1e-06 s
+
+Total time: 2.3e-05 s
+File: 4_tmp.py
+Function: findMedianSortedArrays at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def findMedianSortedArrays(self, nums1, nums2):
+    47                                                   # Make sure nums1 is the smaller array.
+    48         4          2.0      0.5      8.7          if len(nums1) > len(nums2):
+    49         2          0.0      0.0      0.0              nums1, nums2 = nums2, nums1
+    50                                           
+    51         4          3.0      0.8     13.0          x, y = len(nums1), len(nums2)
+    52         4          0.0      0.0      0.0          low, high = 0, x
+    53                                                   
+    54         8          0.0      0.0      0.0          while low <= high:
+    55         8          2.0      0.2      8.7              partitionX = (low + high) // 2
+    56         8          1.0      0.1      4.3              partitionY = (x + y + 1) // 2 - partitionX
+    57                                                       
+    58                                                       # If partitionX is 0 it means nothing is there on left side. Use -inf for maxLeftX
+    59                                                       # If partitionX is length of input then there is nothing on right side. Use +inf for minRightX
+    60         8          3.0      0.4     13.0              maxLeftX = float('-inf') if partitionX == 0 else nums1[partitionX - 1]
+    61         8          2.0      0.2      8.7              minRightX = float('inf') if partitionX == x else nums1[partitionX]
+    62                                                       
+    63         8          1.0      0.1      4.3              maxLeftY = float('-inf') if partitionY == 0 else nums2[partitionY - 1]
+    64         8          3.0      0.4     13.0              minRightY = float('inf') if partitionY == y else nums2[partitionY]
+    65                                                       
+    66         8          2.0      0.2      8.7              if maxLeftX <= minRightY and maxLeftY <= minRightX:
+    67                                                           # We have partitioned array at correct place
+    68         4          1.0      0.2      4.3                  if (x + y) % 2 == 0:
+    69         2          1.0      0.5      4.3                      return (max(maxLeftX, maxLeftY) + min(minRightX, minRightY)) / 2
+    70                                                           else:
+    71         2          1.0      0.5      4.3                      return max(maxLeftX, maxLeftY)
+    72         4          0.0      0.0      0.0              elif maxLeftX > minRightY:
+    73                                                           # Need to move partitionX to the left
+    74                                                           high = partitionX - 1
+    75                                                       else:
+    76                                                           # Need to move partitionX to the right
+    77         4          1.0      0.2      4.3                  low = partitionX + 1
+

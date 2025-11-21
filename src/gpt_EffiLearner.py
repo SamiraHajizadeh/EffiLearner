@@ -1,17 +1,14 @@
 import json
-import openai
 import argparse
 import os
-import json
+from openai import OpenAI
 from tqdm import tqdm
 import copy
-import openai
 from concurrent.futures import ThreadPoolExecutor,as_completed
 import concurrent.futures
 import tiktoken
 import time
 from code_efficiency_calculator import calculate_code_execution_efficiency
-from tqdm import tqdm
 
 
 def prompt_construction(task_description, test_case, completion, overhead_prompt):
@@ -46,7 +43,7 @@ def calculate_metrics(entry):
 
 
 # Function to fetch completion
-def fetch_completion(data_entry, model):
+def fetch_completion(data_entry, model, client):
     if "small_test_cases" not in data_entry.keys():
         return data_entry
     if "overhead" not in data_entry.keys():
@@ -58,16 +55,15 @@ def fetch_completion(data_entry, model):
     task_description = data_entry["markdown_description"]
     prompt = prompt_construction(task_description, test_case, completion, overhead)
     try:
-        completions = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model=model,
-            stream=False,
             messages=[
                 {"role": "system", "content": "You are a code developer expert."},
                 {"role": "user", "content": prompt},
             ],
-            request_timeout=100,
+            timeout=100,
         )
-        data_entry["tmp_completion"] = completions.choices[0]["message"]["content"]
+        data_entry["tmp_completion"] = response.choices[0].message.content
 
     except Exception as e:
         print(repr(e))
@@ -109,6 +105,12 @@ overhead_dict = {
     "max_memory_peak": [],
     "correct": []
 }
+
+# Initialize OpenAI client
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    base_url=os.getenv("OPENAI_API_BASE") if os.getenv("OPENAI_API_BASE") else None
+)
 
 for model in model_list:
     with open(f"./EffiBench_{model}.json", "r") as f:
@@ -165,7 +167,7 @@ The maximum memory peak requirement is: {round(total_max_memory_peak/correct, 2)
             print("No correct entries to calculate overall metrics.")
         print("correct",correct)
         with ThreadPoolExecutor(max_workers=20) as executor:
-            future_to_entry = {executor.submit(fetch_completion, copy.deepcopy(entry), model): entry for entry in tqdm(dataset)}
+            future_to_entry = {executor.submit(fetch_completion, copy.deepcopy(entry), model, client): entry for entry in tqdm(dataset)}
             for future in tqdm(concurrent.futures.as_completed(future_to_entry)):
                 entry = future_to_entry[future]
                 try:

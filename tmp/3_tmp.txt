@@ -1,0 +1,23 @@
+Timer unit: 1e-06 s
+
+Total time: 2.1e-05 s
+File: 3_tmp.py
+Function: lengthOfLongestSubstring at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def lengthOfLongestSubstring(self, s: str) -> int:
+    47         3          1.0      0.3      4.8          char_map = {}
+    48         3          0.0      0.0      0.0          left = 0
+    49         3          0.0      0.0      0.0          max_length = 0
+    50                                                   
+    51        22          5.0      0.2     23.8          for right, char in enumerate(s):
+    52        19          2.0      0.1      9.5              if char in char_map and char_map[char] >= left:
+    53        11          2.0      0.2      9.5                  left = char_map[char] + 1
+    54                                                       
+    55        19          2.0      0.1      9.5              char_map[char] = right
+    56        19          9.0      0.5     42.9              max_length = max(max_length, right - left + 1)
+    57                                                   
+    58         3          0.0      0.0      0.0          return max_length
+

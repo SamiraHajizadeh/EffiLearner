@@ -1,0 +1,37 @@
+Timer unit: 1e-06 s
+
+Total time: 4.4e-05 s
+File: 10_tmp.py
+Function: isMatch at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def isMatch(self, s: str, p: str) -> bool:
+    47                                                   # Create a 2D DP table with False as the default value.
+    48         6          8.0      1.3     18.2          dp = [[False] * (len(p) + 1) for _ in range(len(s) + 1)]
+    49                                                   
+    50                                                   # Base case: empty string and empty pattern match.
+    51         6          2.0      0.3      4.5          dp[0][0] = True
+    52                                                   
+    53                                                   # Handle patterns like a*, a*b*, a*b*c* which can match an empty string.
+    54        10          2.0      0.2      4.5          for j in range(2, len(p) + 1):
+    55         4          0.0      0.0      0.0              if p[j - 1] == '*':
+    56         4          2.0      0.5      4.5                  dp[0][j] = dp[0][j - 2]
+    57                                           
+    58                                                   # Fill the DP table.
+    59        18          6.0      0.3     13.6          for i in range(1, len(s) + 1):
+    60        32         10.0      0.3     22.7              for j in range(1, len(p) + 1):
+    61        20          9.0      0.5     20.5                  if p[j - 1] == '.' or p[j - 1] == s[i - 1]:
+    62                                                               # Current characters match, inherit the value from top-left diagonal.
+    63        12          0.0      0.0      0.0                      dp[i][j] = dp[i - 1][j - 1]
+    64         8          1.0      0.1      2.3                  elif p[j - 1] == '*':
+    65                                                               # '*' can match zero occurrence of preceding element.
+    66         8          3.0      0.4      6.8                      dp[i][j] = dp[i][j - 2]
+    67                                                               # If the character before '*' matches s[i-1], use the result above.
+    68         8          1.0      0.1      2.3                      if p[j - 2] == '.' or p[j - 2] == s[i - 1]:
+    69         8          0.0      0.0      0.0                          dp[i][j] = dp[i][j] or dp[i - 1][j]
+    70                                           
+    71                                                   # The final result is in the bottom-right corner of the table.
+    72         6          0.0      0.0      0.0          return dp[len(s)][len(p)]
+

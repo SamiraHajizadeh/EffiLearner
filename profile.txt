@@ -1,0 +1,32 @@
+ /Users/samirahajizadeh/Desktop/SumanFall25/EffiLearner/src/test_code.py: % of time = 100.00% (207.915ms) out of  
+                                                    207.915ms.                                                    
+       ╷       ╷       ╷       ╷        ╷       ╷               ╷       ╷                                         
+       │Time   │–––––– │–––––– │Memory  │–––––– │–––––––––––    │Copy   │                                         
+  Line │Python │native │system │Python  │peak   │timeline/%     │(MB/s) │/Users/samirahajizadeh/Desktop/SumanFa…  
+╺━━━━━━┿━━━━━━━┿━━━━━━━┿━━━━━━━┿━━━━━━━━┿━━━━━━━┿━━━━━━━━━━━━━━━┿━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸
+     1 │       │       │       │        │       │               │       │import math                              
+     2 │       │       │       │        │       │               │       │                                         
+     3 │       │       │       │        │       │               │       │def slow_compute_primes(n):              
+     4 │       │       │       │        │       │               │       │    """Very naive prime finder, with re  
+     5 │       │       │       │        │       │               │       │    primes = []                          
+     6 │       │       │       │        │       │               │       │    for x in range(2, n):                
+     7 │       │       │       │        │       │               │       │        is_prime = True                  
+     8 │       │       │       │        │       │               │       │        # computing sqrt(n) every time   
+     9 │    5% │    1% │       │        │       │               │       │        limit = int(math.sqrt(x)) + 1    
+    10 │    5% │    1% │       │        │       │               │       │        for d in range(2, limit):        
+    11 │   58% │   22% │       │        │       │               │   115 │            if x % d == 0:               
+    12 │       │       │       │        │       │               │       │                is_prime = False         
+    13 │       │       │       │        │       │               │       │                break                    
+    14 │    5% │    1% │       │        │       │               │       │        if is_prime:                     
+    15 │       │       │       │        │       │               │       │            primes.append(x)             
+    16 │       │       │       │        │       │               │       │    return primes                        
+    17 │       │       │       │        │       │               │       │                                         
+    18 │       │       │       │        │       │               │       │if __name__ == "__main__":               
+    19 │       │       │       │        │       │               │       │    for _ in range(3):                   
+    20 │       │       │       │        │       │               │       │        result = slow_compute_primes(10  
+    21 │       │       │       │        │       │               │       │    print(f"Found {len(result)} primes"  
+       │       │       │       │        │       │               │       │                                         
+╶──────┼───────┼───────┼───────┼────────┼───────┼───────────────┼───────┼────────────────────────────────────────╴
+       │       │       │       │        │       │               │       │function summary for /Users/samirahaji…  
+     3 │   73% │   26% │       │        │       │               │   115 │slow_compute_primes                      
+       ╵       ╵       ╵       ╵        ╵       ╵               ╵       ╵                                         

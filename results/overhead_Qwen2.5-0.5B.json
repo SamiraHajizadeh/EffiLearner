@@ -1,0 +1,42 @@
+{
+    "overhead": [
+        "\nThe total memory usage during the code execution is: 0.0 MB*s.\nThe total execution time is: 0.0 s.\nThe maximum memory peak requirement is: 0.0 MB.\n",
+        "\nThe total memory usage during the code execution is: 0.0 MB*s.\nThe total execution time is: 0.0 s.\nThe maximum memory peak requirement is: 0.0 MB.\n",
+        "\nThe total memory usage during the code execution is: 0.0 MB*s.\nThe total execution time is: 0.0 s.\nThe maximum memory peak requirement is: 0.0 MB.\n",
+        "\nThe total memory usage during the code execution is: 0.0 MB*s.\nThe total execution time is: 0.0 s.\nThe maximum memory peak requirement is: 0.0 MB.\n",
+        "\nThe total memory usage during the code execution is: 0.0 MB*s.\nThe total execution time is: 0.0 s.\nThe maximum memory peak requirement is: 0.0 MB.\n",
+        "\nThe total memory usage during the code execution is: 0.0 MB*s.\nThe total execution time is: 0.0 s.\nThe maximum memory peak requirement is: 0.0 MB.\n"
+    ],
+    "memory_usage": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "execution_time": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "max_memory_peak": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "correct": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+    ]
+}

@@ -31,15 +31,26 @@ completion_dat_file="$2"
 # file_type="$3"
 max_execution_time="$3"
 # Execute the specified file
-# max_execution_time=10
 echo "Executing $completion_file"
 error_output=$(mktemp)
 start_time=$(date +%s%N)
 rm -f "$completion_dat_file"
-timeout "$max_execution_time" mprof run --interval 0.001 --output "$completion_dat_file" "$completion_file" 2> "$error_output"
+
+# Use gtimeout on macOS (from coreutils), fallback to timeout on Linux
+if command -v gtimeout &> /dev/null; then
+    TIMEOUT_CMD="gtimeout"
+elif command -v timeout &> /dev/null; then
+    TIMEOUT_CMD="timeout"
+else
+    echo "Error: timeout command not found. Install coreutils: brew install coreutils"
+    rm -f "$error_output"
+    exit 1
+fi
+
+$TIMEOUT_CMD "$max_execution_time" mprof run --interval 0.001 --output "$completion_dat_file" "$completion_file" 2> "$error_output"
+exit_status=$?
 end_time=$(date +%s%N)
 execution_time=$(( (end_time - start_time) / 1000000 ))
-exit_status=$?
 
 # Check execution status
 echo "Execution status: $exit_status"

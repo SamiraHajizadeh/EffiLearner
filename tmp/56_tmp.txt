@@ -1,0 +1,31 @@
+Timer unit: 1e-06 s
+
+Total time: 2.1e-05 s
+File: 56_tmp.py
+Function: merge at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def merge(self, intervals):
+    47                                                   # Early return for the empty intervals list
+    48         8          2.0      0.2      9.5          if not intervals:
+    49         1          0.0      0.0      0.0              return []
+    50                                           
+    51                                                   # Sort the intervals based on start time
+    52         7          8.0      1.1     38.1          intervals.sort(key=lambda x: x[0])
+    53                                           
+    54                                                   # Initialize the list with the first interval
+    55         7          2.0      0.3      9.5          merged_intervals = [intervals[0]]
+    56                                           
+    57        20          3.0      0.1     14.3          for current in intervals[1:]:
+    58        13          2.0      0.2      9.5              last_merged = merged_intervals[-1]
+    59                                                       # If the current interval does not overlap with the last merged interval, add it
+    60        13          1.0      0.1      4.8              if last_merged[1] < current[0]:
+    61         6          1.0      0.2      4.8                  merged_intervals.append(current)
+    62                                                       else:
+    63                                                           # There is overlap, so we merge
+    64         7          1.0      0.1      4.8                  last_merged[1] = max(last_merged[1], current[1])
+    65                                           
+    66         7          1.0      0.1      4.8          return merged_intervals
+

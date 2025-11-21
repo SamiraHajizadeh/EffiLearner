@@ -1,0 +1,30 @@
+Timer unit: 1e-06 s
+
+Total time: 6.2e-05 s
+File: 3_tmp.py
+Function: lengthOfLongestSubstring at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def lengthOfLongestSubstring(self, s: str) -> int:
+    47                                                   # Set to store the characters in current window
+    48         6          4.0      0.7      6.5          char_set = set()
+    49                                                   # Initialize pointers for the sliding window
+    50         6          1.0      0.2      1.6          left = 0
+    51                                                   # Variable to store the maximum length of substring found
+    52         6          0.0      0.0      0.0          max_length = 0
+    53                                                   
+    54                                                   # Iterate through the string using another pointer `right`
+    55        44          6.0      0.1      9.7          for right in range(len(s)):
+    56                                                       # If the character s[right] is in the set, slide the window from the left
+    57        66          7.0      0.1     11.3              while s[right] in char_set:
+    58        28          5.0      0.2      8.1                  char_set.remove(s[left])
+    59        28         10.0      0.4     16.1                  left += 1
+    60                                                       # Add the character s[right] to the set
+    61        38         10.0      0.3     16.1              char_set.add(s[right])
+    62                                                       # Update the maximum length of substring without repeating characters
+    63        38         16.0      0.4     25.8              max_length = max(max_length, right - left + 1)
+    64                                                   
+    65         6          3.0      0.5      4.8          return max_length
+

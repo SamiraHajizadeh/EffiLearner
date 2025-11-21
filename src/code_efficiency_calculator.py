@@ -395,12 +395,58 @@ def mbpp_add_string_to_py_file(data,evaluation_code=False, path="./tmp/"):
     problem_idx = str(data["task_id"])
     return_path,full_code = "",""
     try:
-        if f"```python" in data["completion"]:
-            start_idx = data["completion"].find(f"```python")
-            data["completion"] = data["completion"][start_idx+len(f"```python"):]
-            if "```" in data["completion"]:
-                end_idx = data["completion"].find("```")
-                data["completion"] = data["completion"][:end_idx]
+        completion = data["completion"]
+        
+        # Extract code from markdown code blocks
+        if "```python" in completion:
+            start_idx = completion.find("```python")
+            completion = completion[start_idx+len("```python"):]
+            if "```" in completion:
+                end_idx = completion.find("```")
+                completion = completion[:end_idx]
+        elif "```" in completion:
+            start_idx = completion.find("```")
+            completion = completion[start_idx+3:]
+            if "```" in completion:
+                end_idx = completion.find("```")
+                completion = completion[:end_idx]
+        
+        # If no markdown blocks, try to extract function definition
+        # Look for "def function_name(" pattern
+        if "def " in completion and not completion.strip().startswith("def "):
+            # Find the first function definition
+            import re
+            func_match = re.search(r'def\s+\w+\([^)]*\):.*', completion, re.DOTALL)
+            if func_match:
+                extracted = func_match.group(0)
+                # Clean up: remove trailing explanatory text
+                lines = extracted.split('\n')
+                cleaned_lines = []
+                for line in lines:
+                    stripped = line.strip()
+                    # Stop at obvious explanatory text (all caps, very long lines, markdown)
+                    if stripped and (stripped.isupper() or len(stripped) > 150 or '```' in line):
+                        # But allow comments
+                        if not stripped.startswith('#'):
+                            break
+                    cleaned_lines.append(line)
+                completion = '\n'.join(cleaned_lines).strip()
+        
+        # Clean up the completion - remove leading text before function
+        if "def " in completion and not completion.strip().startswith("def "):
+            # Find where the function starts
+            func_start = completion.find("def ")
+            # Keep some context (comments, imports) but remove explanatory text
+            lines_before = completion[:func_start].split('\n')
+            kept_lines = []
+            for line in lines_before:
+                stripped = line.strip()
+                # Keep imports and comments, remove other text
+                if stripped.startswith(('import ', 'from ', '#')) or not stripped:
+                    kept_lines.append(line)
+            completion = '\n'.join(kept_lines) + completion[func_start:]
+        
+        data["completion"] = completion.strip()
         full_code = "\n".join(data["test_imports"])+ "\n"+data["completion"] + "\n" + test_case
         with open(f"./{path}/{problem_idx}.py", "w") as f:
             f.write(full_code)
@@ -417,8 +463,24 @@ def add_string_to_py_file(data,evaluation_code=False, path="./tmp/"):
     if evaluation_code==False:
         test_case = data["test_case"]
     else: 
-        test_case = data["small_test_cases"]
-    problem_idx = data["problem_idx"]
+        # Handle different dataset formats
+        if "dataset" in data and data["dataset"] == "MBPP":
+            test_case = "\n".join(data["test_list"])
+        elif "dataset" in data and data["dataset"] == "HumanEval":
+            test_case = data.get("open_test_cases", data.get("test", ""))
+        else:
+            # Default to EffiBench format
+            test_case = data["small_test_cases"]
+    
+    # Handle problem_idx for different datasets
+    if "dataset" in data and data["dataset"] == "MBPP":
+        problem_idx = str(data.get("task_id", data.get("problem_idx", "unknown")))
+    elif "dataset" in data and data["dataset"] == "HumanEval":
+        problem_idx = data.get("task_id", data.get("problem_idx", "unknown"))
+        if "/" in str(problem_idx):
+            problem_idx = str(problem_idx).split("/")[1]
+    else:
+        problem_idx = data["problem_idx"]
     return_path,full_code = "",""
     try:
         if "class Solution" in data["completion"]:
@@ -474,11 +536,38 @@ The code execution failed.
         executable = False
         return overhead, canonical_solution_memory_usage, canonical_solution_execution_time, canonical_solution_max_memory_usage, executable
 
-    script_path = '../scripts/run_code.sh'
-    completion_dat_file = f'./{path}/{problem_idx}.dat'
+    # Use absolute paths to avoid issues with relative paths
+    script_path = os.path.join(os.path.dirname(__file__), '..', 'scripts', 'run_code.sh')
+    script_path = os.path.abspath(script_path)
+    
+    if not os.path.exists(script_path):
+        raise FileNotFoundError(f"run_code.sh not found at {script_path}")
+    
+    completion_dat_file = os.path.join(path, f'{problem_idx}.dat')
+    # Normalize path to avoid ././tmp issues
+    completion_dat_file = os.path.normpath(completion_dat_file)
+    
+    # Ensure the output directory exists
+    os.makedirs(os.path.dirname(completion_dat_file), exist_ok=True)
+    
     try:
-        subprocess.run([script_path, completion_file, completion_dat_file,str(max_execution_time)], 
-                            check=True, capture_output=True, text=True)
+        result = subprocess.run(
+            [script_path, completion_file, completion_dat_file, str(max_execution_time)], 
+            check=False,  # Don't raise on non-zero exit
+            capture_output=True, 
+            text=True
+        )
+        
+        # Check if .dat file was created (run_code.sh removes it on failure)
+        if not os.path.exists(completion_dat_file) or os.path.getsize(completion_dat_file) == 0:
+            raise FileNotFoundError(f"Failed to create .dat file: {completion_dat_file}. Script output: {result.stderr[:200]}")
+        
+        # Verify it has at least 2 lines (mprof output format)
+        with open(completion_dat_file, 'r') as f:
+            lines = f.readlines()
+            if len(lines) < 2:
+                raise ValueError(f"Invalid .dat file: {completion_dat_file} (only {len(lines)} lines)")
+        
         canonical_solution_memory_usage = calculate_memory_usage(completion_dat_file)
         canonical_solution_execution_time = calculate_runtime(completion_dat_file)
         canonical_solution_max_memory_usage = report_max_memory_usage(completion_dat_file)

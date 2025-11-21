@@ -1,0 +1,42 @@
+Timer unit: 1e-06 s
+
+Total time: 1.2e-05 s
+File: 29_tmp.py
+Function: divide at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def divide(self, dividend: int, divisor: int) -> int:
+    47                                                   # Handling special cases
+    48         2          1.0      0.5      8.3          if divisor == 0:
+    49                                                       raise ValueError("Divisor cannot be zero.")
+    50         2          1.0      0.5      8.3          if dividend == 0:
+    51                                                       return 0
+    52                                                   
+    53                                                   # Handle overflow case
+    54         2          0.0      0.0      0.0          if dividend == -2**31 and divisor == -1:
+    55                                                       return 2**31 - 1
+    56                                                   
+    57                                                   # Determine the sign of the result
+    58         2          2.0      1.0     16.7          sign = -1 if (dividend < 0) ^ (divisor < 0) else 1
+    59                                                   
+    60                                                   # Use absolute values for dividend and divisor
+    61         2          0.0      0.0      0.0          dividend, divisor = abs(dividend), abs(divisor)
+    62                                                   
+    63                                                   # Calculate quotient
+    64         2          1.0      0.5      8.3          quotient = 0
+    65         5          1.0      0.2      8.3          while dividend >= divisor:
+    66         3          1.0      0.3      8.3              temp, multiple = divisor, 1
+    67         5          1.0      0.2      8.3              while dividend >= (temp << 1):
+    68         2          1.0      0.5      8.3                  temp <<= 1
+    69         2          0.0      0.0      0.0                  multiple <<= 1
+    70         3          0.0      0.0      0.0              dividend -= temp
+    71         3          1.0      0.3      8.3              quotient += multiple
+    72                                                   
+    73                                                   # Apply the sign to the quotient
+    74         2          0.0      0.0      0.0          quotient = sign * quotient
+    75                                                   
+    76                                                   # Clamp to 32-bit signed integer range
+    77         2          2.0      1.0     16.7          return max(-2**31, min(quotient, 2**31 - 1))
+

@@ -1,0 +1,20 @@
+Timer unit: 1e-06 s
+
+Total time: 1.4e-05 s
+File: 55_tmp.py
+Function: canJump at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def canJump(self, nums):
+    47         4          1.0      0.2      7.1          max_reachable = 0
+    48         4          0.0      0.0      0.0          target = len(nums) - 1
+    49        14          5.0      0.4     35.7          for i, num in enumerate(nums):
+    50        14          2.0      0.1     14.3              if i > max_reachable:
+    51         2          0.0      0.0      0.0                  return False
+    52        12          2.0      0.2     14.3              max_reachable = max(max_reachable, i + num)
+    53        12          4.0      0.3     28.6              if max_reachable >= target:
+    54         2          0.0      0.0      0.0                  return True
+    55                                                   return False
+

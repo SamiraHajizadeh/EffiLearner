@@ -1,0 +1,30 @@
+Timer unit: 1e-06 s
+
+Total time: 2.8e-05 s
+File: 11_tmp.py
+Function: maxArea at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def maxArea(self, height):
+    47         4          1.0      0.2      3.6          max_area = 0
+    48         4          1.0      0.2      3.6          left, right = 0, len(height) - 1
+    49                                                   
+    50        22          4.0      0.2     14.3          while left < right:
+    51                                                       # Calculate the current area
+    52        18          2.0      0.1      7.1              width = right - left
+    53        18          5.0      0.3     17.9              current_height = min(height[left], height[right])
+    54        18          3.0      0.2     10.7              current_area = width * current_height
+    55                                                       
+    56                                                       # Update max_area if current_area is larger
+    57        18          2.0      0.1      7.1              max_area = max(max_area, current_area)
+    58                                                       
+    59                                                       # Move the pointer of the shorter line
+    60        18          5.0      0.3     17.9              if height[left] < height[right]:
+    61         2          0.0      0.0      0.0                  left += 1
+    62                                                       else:
+    63        16          4.0      0.2     14.3                  right -= 1
+    64                                                           
+    65         4          1.0      0.2      3.6          return max_area
+

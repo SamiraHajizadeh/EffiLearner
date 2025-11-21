@@ -1,0 +1,32 @@
+
+The total memory usage during the code execution is: 0.553801 MB*s.
+The total execution time is: 0.705645 s.
+The maximum memory peak requirement is: 0.971371 MB.
+The line_profiler results are: 
+Timer unit: 1e-06 s
+
+Total time: 3.95361 s
+File: /Users/samirahajizadeh/Desktop/SumanFall25/EffiLearner/src/test_code_tmp.py
+Function: slow_compute_primes at line 4
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+     4                                           @profile
+     5                                           def slow_compute_primes(n):
+     6                                               """Very naive prime finder, with redundant work."""
+     7         3          2.0      0.7      0.0      primes = []
+     8    299997      76339.0      0.3      1.9      for x in range(2, n):
+     9    299994      67597.0      0.2      1.7          is_prime = True
+    10                                                   # computing sqrt(n) every time
+    11    299994      89065.0      0.3      2.3          limit = int(math.sqrt(x)) + 1
+    12   8265855    1810709.0      0.2     45.8          for d in range(2, limit):
+    13   8237079    1714388.0      0.2     43.4              if x % d == 0:
+    14    271218      54057.0      0.2      1.4                  is_prime = False
+    15    271218      55522.0      0.2      1.4                  break
+    16    299994      70449.0      0.2      1.8          if is_prime:
+    17     28776      15475.0      0.5      0.4              primes.append(x)
+    18         3          6.0      2.0      0.0      return primes
+
+
+The memory profiler results are: 
+Memory profiler: No output generated.

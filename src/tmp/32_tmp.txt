@@ -1,0 +1,30 @@
+Timer unit: 1e-06 s
+
+Total time: 2e-05 s
+File: 32_tmp.py
+Function: longestValidParentheses at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def longestValidParentheses(self, s: str) -> int:
+    47                                                   # Initialize stack with a base index of -1
+    48         6          3.0      0.5     15.0          stack = [-1]
+    49         6          1.0      0.2      5.0          max_length = 0
+    50                                           
+    51        24          5.0      0.2     25.0          for i, char in enumerate(s):
+    52        18          4.0      0.2     20.0              if char == '(':
+    53                                                           # Push the index of the '(' onto the stack
+    54         8          1.0      0.1      5.0                  stack.append(i)
+    55                                                       else:
+    56                                                           # Pop the top index for a completed pair
+    57        10          1.0      0.1      5.0                  stack.pop()
+    58        10          2.0      0.2     10.0                  if not stack:
+    59                                                               # If stack is empty after popping, push the current index as a new base
+    60         4          1.0      0.2      5.0                      stack.append(i)
+    61                                                           else:
+    62                                                               # Calculate the length of the valid substring
+    63         6          2.0      0.3     10.0                      max_length = max(max_length, i - stack[-1])
+    64                                           
+    65         6          0.0      0.0      0.0          return max_length
+

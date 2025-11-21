@@ -1,0 +1,25 @@
+Timer unit: 1e-06 s
+
+Total time: 7e-06 s
+File: 26_tmp.py
+Function: removeDuplicates at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def removeDuplicates(self, nums):
+    47                                                   # Edge case where the list is empty
+    48         2          1.0      0.5     14.3          if len(nums) <= 1:
+    49                                                       return len(nums)
+    50                                                   
+    51                                                   # Initialize the index for the next unique element
+    52         2          0.0      0.0      0.0          unique_index = 1
+    53                                                   
+    54                                                   # Iterate over the array starting from the second element
+    55        13          3.0      0.2     42.9          for j in range(1, len(nums)):
+    56        11          2.0      0.2     28.6              if nums[j] != nums[unique_index - 1]:
+    57         5          0.0      0.0      0.0                  nums[unique_index] = nums[j]
+    58         5          1.0      0.2     14.3                  unique_index += 1
+    59                                                   
+    60         2          0.0      0.0      0.0          return unique_index
+

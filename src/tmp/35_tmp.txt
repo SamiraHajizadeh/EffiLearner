@@ -1,0 +1,25 @@
+Timer unit: 1e-06 s
+
+Total time: 1.9e-05 s
+File: 35_tmp.py
+Function: searchInsert at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def searchInsert(self, nums, target):
+    47         6          2.0      0.3     10.5          left, right = 0, len(nums) - 1
+    48                                                   
+    49        18          8.0      0.4     42.1          while left <= right:
+    50        14          1.0      0.1      5.3              mid = (left + right) // 2
+    51                                                       
+    52        14          2.0      0.1     10.5              if nums[mid] == target:
+    53         2          1.0      0.5      5.3                  return mid
+    54        12          2.0      0.2     10.5              elif nums[mid] < target:
+    55        10          2.0      0.2     10.5                  left = mid + 1
+    56                                                       else:
+    57         2          0.0      0.0      0.0                  right = mid - 1
+    58                                                   
+    59                                                   # If we don't find the target, left will be the insertion point
+    60         4          1.0      0.2      5.3          return left
+

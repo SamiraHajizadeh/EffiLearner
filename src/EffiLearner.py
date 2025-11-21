@@ -8,6 +8,7 @@ import torch
 from transformers import AutoTokenizer,AutoModelForCausalLM
 from code_efficiency_calculator import calculate_code_execution_efficiency
 from datasets import load_dataset
+import argparse
 
 
 batch_size = 8
@@ -104,8 +105,21 @@ if __name__ == "__main__":
     epoch = args.epoch
     print("Checkpoint: ",checkpoint)
     model_name = checkpoint.split("/")[-1]
-    model = AutoModelForCausalLM.from_pretrained(checkpoint,device_map = "auto",trust_remote_code=True,torch_dtype=torch.float16)
-    tokenizer = AutoTokenizer.from_pretrained(checkpoint,trust_remote_code=True)
+    # Determine device for Mac (MPS) or CPU
+    if torch.backends.mps.is_available():
+        device = torch.device("mps")
+        print("Using MPS (Metal) acceleration")
+    else:
+        device = torch.device("cpu")
+        print("Using CPU")
+    
+    model = AutoModelForCausalLM.from_pretrained(
+        checkpoint,
+        trust_remote_code=True,
+        dtype=torch.float32 if device.type == "cpu" else torch.float16
+    ).to(device)
+    tokenizer = AutoTokenizer.from_pretrained(checkpoint, trust_remote_code=True)
+    tokenizer.padding_side = "left"
     overhead_dict = {
         "overhead": [],
         "memory_usage": [],
@@ -113,7 +127,7 @@ if __name__ == "__main__":
         "max_memory_peak": [],
         "correct": [],
     }
-    with open(f"../results/{args.dataset}_{model_name}.json", "r") as f:
+    with open(f"src/../results/{args.dataset}_{model_name}.json", "r") as f:
         dataset = json.load(f)
     if args.dataset == "HumanEval":
         humaneval_open_testcases = load_dataset("openai_humaneval",split="test")
@@ -133,7 +147,14 @@ if __name__ == "__main__":
             dataset[i]["max_memory_peak"] = max_memory_peak
             dataset[i]["executable"] = executable
 
+    original_count = len(dataset)
     dataset = [entry for entry in dataset if "executable" in entry.keys() and entry["executable"]]
+    if len(dataset) == 0:
+        print(f"\n⚠️  WARNING: No executable code found in {original_count} entries!")
+        print("   The script will exit as there are no entries to optimize.")
+        print("   Please check that the generated code is executable.")
+        exit(0)
+    print(f"\n✓ Found {len(dataset)} executable entries to optimize (out of {original_count} total)")
     total_memory_usage = 0
     total_execution_time = 0
     total_max_memory_peak = 0
@@ -204,8 +225,8 @@ The maximum memory peak requirement is: {round(total_max_memory_peak/correct,2)}
         overhead_dict["max_memory_peak"].append(round(total_max_memory_peak/correct,2))
         overhead_dict["correct"].append(correct)
 
-        with open(f"../results/{args.dataset}_{model_name}_{current_epoch}.json", "w") as f:
+        with open(f"src/../results/{args.dataset}_{model_name}_{current_epoch}.json", "w") as f:
             json.dump(dataset, f, indent=4)
 
-    with open(f"../results/overhead_{model_name}.json", "w") as f:
+    with open(f"src/../results/overhead_{model_name}.json", "w") as f:
         json.dump(overhead_dict, f, indent=4)

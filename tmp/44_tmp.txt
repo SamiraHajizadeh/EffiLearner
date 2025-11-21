@@ -1,0 +1,39 @@
+Timer unit: 1e-06 s
+
+Total time: 2.5e-05 s
+File: 44_tmp.py
+Function: isMatch at line 45
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    45                                               @profile
+    46                                               def isMatch(self, s: str, p: str) -> bool:
+    47                                                   # We only need two rows in our DP table to store current and previous results
+    48         3          1.0      0.3      4.0          previous = [False] * (len(p) + 1)
+    49         3          2.0      0.7      8.0          current = [False] * (len(p) + 1)
+    50                                                   
+    51                                                   # Base case, both strings are empty
+    52         3          0.0      0.0      0.0          previous[0] = True
+    53                                                   
+    54                                                   # Initialize first row (case when s is an empty string)
+    55         7          4.0      0.6     16.0          for j in range(1, len(p) + 1):
+    56         4          0.0      0.0      0.0              if p[j-1] == '*':
+    57         1          0.0      0.0      0.0                  previous[j] = previous[j-1]
+    58                                                   
+    59                                                   # Fill the DP table using just two rows
+    60         9          3.0      0.3     12.0          for i in range(1, len(s) + 1):
+    61         6          3.0      0.5     12.0              current[0] = False
+    62                                                       
+    63        14          5.0      0.4     20.0              for j in range(1, len(p) + 1):
+    64         8          3.0      0.4     12.0                  if p[j-1] == '*':
+    65         2          0.0      0.0      0.0                      current[j] = previous[j] or current[j-1]
+    66         6          1.0      0.2      4.0                  elif p[j-1] == '?' or s[i-1] == p[j-1]:
+    67         4          1.0      0.2      4.0                      current[j] = previous[j-1]
+    68                                                           else:
+    69         2          1.0      0.5      4.0                      current[j] = False
+    70                                           
+    71                                                       # Prepare for the next iteration
+    72         6          0.0      0.0      0.0              previous, current = current, previous
+    73                                                   
+    74         3          1.0      0.3      4.0          return previous[len(p)]
+
